@@ -12,9 +12,11 @@ import {
 } from 'lucide-react';
 import api from '../api/client';
 import toast from 'react-hot-toast';
+import CreateFlightModal from '../components/CreateFlightModal';
 
 const FlightManagement: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const queryClient = useQueryClient();
 
     const { data, isLoading } = useQuery({
@@ -42,7 +44,10 @@ const FlightManagement: React.FC = () => {
                     <h1 className="text-2xl font-bold text-secondary">Flight Management</h1>
                     <p className="text-gray-500">Create, update, and manage flight schedules and availability.</p>
                 </div>
-                <button className="btn-primary flex items-center gap-2">
+                <button
+                    className="btn-primary flex items-center gap-2"
+                    onClick={() => setIsModalOpen(true)}
+                >
                     <Plus size={18} />
                     <span>Add New Flight</span>
                 </button>
@@ -133,6 +138,11 @@ const FlightManagement: React.FC = () => {
                     </div>
                 ))}
             </div>
+
+            <CreateFlightModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
         </div>
     );
 };
