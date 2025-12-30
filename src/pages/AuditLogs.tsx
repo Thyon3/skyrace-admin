@@ -10,10 +10,17 @@ import {
 import api from '../api/client';
 
 const AuditLogs: React.FC = () => {
+    const [page, setPage] = useState(1);
+    const [actionFilter, setActionFilter] = useState('');
+    const [resourceFilter, setResourceFilter] = useState('');
+
     const { data, isLoading } = useQuery({
-        queryKey: ['admin-audit-logs'],
+        queryKey: ['admin-audit-logs', page, actionFilter, resourceFilter],
         queryFn: async () => {
-            const res = await api.get('/admin/audit');
+            const params: any = { page, limit: 20 };
+            if (actionFilter) params.action = actionFilter;
+            if (resourceFilter) params.resource = resourceFilter;
+            const res = await api.get('/admin/audit', { params });
             return res.data;
         }
     });
@@ -59,8 +66,8 @@ const AuditLogs: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${log.action === 'DELETE' ? 'bg-red-100 text-red-600' :
-                                                log.action === 'CREATE' ? 'bg-green-100 text-green-600' :
-                                                    'bg-blue-100 text-blue-600'
+                                            log.action === 'CREATE' ? 'bg-green-100 text-green-600' :
+                                                'bg-blue-100 text-blue-600'
                                             }`}>
                                             {log.action}
                                         </span>
