@@ -13,9 +13,12 @@ import {
 } from 'lucide-react';
 import api from '../api/client';
 import toast from 'react-hot-toast';
+import EditUserModal from '../components/EditUserModal';
 
 const UserManagement: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedUser, setSelectedUser] = useState<any>(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const queryClient = useQueryClient();
 
     const { data, isLoading } = useQuery({
@@ -126,8 +129,14 @@ const UserManagement: React.FC = () => {
                                             >
                                                 <Trash2 size={18} />
                                             </button>
-                                            <button className="p-2 hover:bg-gray-100 text-gray-500 rounded-lg transition-colors">
-                                                <MoreVertical size={18} />
+                                            <button
+                                                className="p-2 hover:bg-gray-100 text-gray-500 rounded-lg transition-colors"
+                                                onClick={() => {
+                                                    setSelectedUser(user);
+                                                    setIsEditModalOpen(true);
+                                                }}
+                                            >
+                                                <Edit2 size={18} />
                                             </button>
                                         </div>
                                     </td>
@@ -137,6 +146,17 @@ const UserManagement: React.FC = () => {
                     </table>
                 </div>
             </div>
+
+            {selectedUser && (
+                <EditUserModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => {
+                        setIsEditModalOpen(false);
+                        setSelectedUser(null);
+                    }}
+                    user={selectedUser}
+                />
+            )}
         </div>
     );
 };
