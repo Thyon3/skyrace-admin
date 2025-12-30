@@ -38,6 +38,17 @@ const FlightManagement: React.FC = () => {
         }
     });
 
+    const updateMutation = useMutation({
+        mutationFn: (payload: { id: string; status: string }) => api.patch(`/admin/flights/${payload.id}`, { status: payload.status }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-flights'] });
+            toast.success('Flight status updated successfully');
+        },
+        onError: (err: any) => {
+            toast.error(err.response?.data?.message || 'Failed to update flight status');
+        }
+    });
+
     const flights = data?.flights || [];
 
     const handleEdit = (flight: any) => {
@@ -106,10 +117,33 @@ const FlightManagement: React.FC = () => {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-secondary text-lg">{flight.airline}</h3>
-                                        <p className="text-sm text-primary font-mono">{flight.flightNumber}</p>
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-sm text-primary font-mono">{flight.flightNumber}</p>
+                                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${flight.status === 'Cancelled' ? 'bg-red-100 text-red-600' :
+                                                    flight.status === 'Delayed' ? 'bg-yellow-100 text-yellow-600' :
+                                                        'bg-green-100 text-green-600'
+                                                }`}>
+                                                {flight.status}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button
+                                        className={`p-2 rounded-lg transition-colors ${flight.status === 'Cancelled'
+                                            ? 'bg-green-50 text-green-600 hover:bg-green-100'
+                                            : 'bg-orange-50 text-orange-600 hover:bg-orange-100'
+                                            }`}
+                                        title={flight.status === 'Cancelled' ? 'Restore Flight' : 'Cancel Flight'}
+                                        onClick={() => {
+                                            const newStatus = flight.status === 'Cancelled' ? 'On Time' : 'Cancelled';
+                                            if (window.confirm(`Are you sure you want to change status to ${newStatus}?`)) {
+                                                updateMutation.mutate({ id: flight._id, status: newStatus });
+                                            }
+                                        }}
+                                    >
+                                        <Clock size={18} />
+                                    </button>
                                     <button
                                         className="p-2 hover:bg-blue-50 text-blue-500 rounded-lg transition-colors"
                                         onClick={() => handleEdit(flight)}
