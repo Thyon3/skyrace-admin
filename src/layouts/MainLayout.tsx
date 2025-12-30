@@ -99,26 +99,29 @@ const MainLayout: React.FC = () => {
                         active={location.pathname === '/payments'}
                     />
                     <SidebarItem
-                        icon={ClipboardList}
-                        label="Audit Logs"
-                        path="/audit"
-                        active={location.pathname === '/audit'}
-                    />
-                    <SidebarItem
                         icon={Bell}
                         label="Notifications"
                         path="/notifications"
                         active={location.pathname === '/notifications'}
                     />
                     <SidebarItem
+                        icon={ClipboardList}
+                        label="Audit Logs"
+                        path="/audit"
+                        active={location.pathname === '/audit'}
+                    />
+                    <SidebarItem
                         icon={Settings}
-                        label="Settings"
+                        label="System Settings"
                         path="/settings"
                         active={location.pathname === '/settings'}
                     />
-                </nav>
-
-                <div className="p-6 border-t">
+                    <SidebarItem
+                        icon={Users}
+                        label="My Profile"
+                        path="/profile"
+                        active={location.pathname === '/profile'}
+                    />
                     <button
                         onClick={logout}
                         className="flex items-center gap-3 text-gray-500 hover:text-red-500 transition-colors w-full"
