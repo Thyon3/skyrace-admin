@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Users from './pages/Users';
 import Flights from './pages/Flights';
 import Bookings from './pages/Bookings';
+import AuditLogs from './pages/AuditLogs';
 
 const queryClient = new QueryClient();
 

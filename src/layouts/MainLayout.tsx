@@ -10,7 +10,8 @@ import {
     LogOut,
     Bell,
     Search,
-    Menu
+    Menu,
+    ClipboardList
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -18,8 +19,8 @@ const SidebarItem = ({ icon: Icon, label, path, active }: any) => (
     <Link
         to={path}
         className={`flex items-center gap-3 px-6 py-4 transition-all duration-200 ${active
-                ? 'bg-primary/10 text-primary border-r-4 border-primary font-bold'
-                : 'text-gray-500 hover:bg-gray-50'
+            ? 'bg-primary/10 text-primary border-r-4 border-primary font-bold'
+            : 'text-gray-500 hover:bg-gray-50'
             }`}
     >
         <Icon size={20} />
@@ -74,6 +75,12 @@ const MainLayout: React.FC = () => {
                         label="Payments"
                         path="/payments"
                         active={location.pathname === '/payments'}
+                    />
+                    <SidebarItem
+                        icon={ClipboardList}
+                        label="Audit Logs"
+                        path="/audit"
+                        active={location.pathname === '/audit'}
                     />
                     <SidebarItem
                         icon={Settings}
