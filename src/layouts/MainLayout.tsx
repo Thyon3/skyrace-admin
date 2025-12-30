@@ -14,7 +14,8 @@ import {
     ClipboardList,
     TrendingUp,
     Globe,
-    Navigation
+    Navigation,
+    Send
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -102,6 +103,12 @@ const MainLayout: React.FC = () => {
                         label="Audit Logs"
                         path="/audit"
                         active={location.pathname === '/audit'}
+                    />
+                    <SidebarItem
+                        icon={Bell}
+                        label="Notifications"
+                        path="/notifications"
+                        active={location.pathname === '/notifications'}
                     />
                     <SidebarItem
                         icon={Settings}
