@@ -39,6 +39,10 @@ const Airports: React.FC = () => {
         a.iataCode.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedAirport, setSelectedAirport] = useState<any>(null);
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -46,7 +50,10 @@ const Airports: React.FC = () => {
                     <h1 className="text-2xl font-bold text-secondary">Airports & Hubs</h1>
                     <p className="text-gray-500">Manage global airport locations and destination data.</p>
                 </div>
-                <button className="btn-primary flex items-center gap-2">
+                <button
+                    onClick={() => setIsCreateModalOpen(true)}
+                    className="btn-primary flex items-center gap-2"
+                >
                     <Plus size={18} />
                     Add Airport
                 </button>
@@ -111,7 +118,13 @@ const Airports: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-2">
-                                            <button className="p-2 hover:bg-gray-100 text-gray-500 rounded-lg transition-colors">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedAirport(airport);
+                                                    setIsEditModalOpen(true);
+                                                }}
+                                                className="p-2 hover:bg-gray-100 text-gray-500 rounded-lg transition-colors"
+                                            >
                                                 <Edit2 size={18} />
                                             </button>
                                             <button
@@ -132,6 +145,22 @@ const Airports: React.FC = () => {
                     </table>
                 </div>
             </div>
+
+            <CreateAirportModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+            />
+
+            {selectedAirport && (
+                <EditAirportModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => {
+                        setIsEditModalOpen(false);
+                        setSelectedAirport(null);
+                    }}
+                    airport={selectedAirport}
+                />
+            )}
         </div>
     );
 };
