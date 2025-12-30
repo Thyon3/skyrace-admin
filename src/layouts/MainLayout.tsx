@@ -12,7 +12,9 @@ import {
     Search,
     Menu,
     ClipboardList,
-    TrendingUp
+    TrendingUp,
+    Globe,
+    Navigation
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -70,6 +72,18 @@ const MainLayout: React.FC = () => {
                         label="Flights"
                         path="/flights"
                         active={location.pathname === '/flights'}
+                    />
+                    <SidebarItem
+                        icon={Globe}
+                        label="Airlines"
+                        path="/airlines"
+                        active={location.pathname === '/airlines'}
+                    />
+                    <SidebarItem
+                        icon={Navigation}
+                        label="Airports"
+                        path="/airports"
+                        active={location.pathname === '/airports'}
                     />
                     <SidebarItem
                         icon={Ticket}
