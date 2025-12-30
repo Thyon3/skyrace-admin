@@ -50,7 +50,7 @@ const App: React.FC = () => {
                             <Route path="notifications" element={<Notifications />} />
                             <Route path="bookings" element={<Bookings />} />
                             <Route path="audit" element={<AuditLogs />} />
-                            <Route path="payments" element={<div>Payments Page (Coming Soon)</div>} />
+                            <Route path="payments" element={<Payments />} />
                             <Route path="settings" element={<Settings />} />
                         </Route>
                     </Routes>
