@@ -11,7 +11,8 @@ import {
     Bell,
     Search,
     Menu,
-    ClipboardList
+    ClipboardList,
+    TrendingUp
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -51,6 +52,12 @@ const MainLayout: React.FC = () => {
                         label="Dashboard"
                         path="/"
                         active={location.pathname === '/'}
+                    />
+                    <SidebarItem
+                        icon={TrendingUp}
+                        label="Analytics"
+                        path="/analytics"
+                        active={location.pathname === '/analytics'}
                     />
                     <SidebarItem
                         icon={Users}
