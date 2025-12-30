@@ -110,7 +110,7 @@ const Dashboard: React.FC = () => {
                     <h3 className="text-lg font-bold text-secondary mb-6">Revenue Growth</h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={data}>
+                            <AreaChart data={metrics?.chartData || []}>
                                 <defs>
                                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#00A991" stopOpacity={0.1} />
@@ -134,7 +134,7 @@ const Dashboard: React.FC = () => {
                     <h3 className="text-lg font-bold text-secondary mb-6">Booking Statistics</h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data}>
+                            <BarChart data={metrics?.chartData || []}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
                                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
@@ -184,8 +184,8 @@ const Dashboard: React.FC = () => {
                                     </td>
                                     <td className="py-4">
                                         <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${booking.status === 'confirmed' ? 'bg-green-100 text-green-600' :
-                                                booking.status === 'cancelled' ? 'bg-red-100 text-red-600' :
-                                                    'bg-yellow-100 text-yellow-600'
+                                            booking.status === 'cancelled' ? 'bg-red-100 text-red-600' :
+                                                'bg-yellow-100 text-yellow-600'
                                             }`}>
                                             {booking.status}
                                         </span>
