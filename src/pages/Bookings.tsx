@@ -14,21 +14,26 @@ import toast from 'react-hot-toast';
 
 const BookingManagement: React.FC = () => {
     const [statusFilter, setStatusFilter] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
     const queryClient = useQueryClient();
 
     const { data, isLoading } = useQuery({
-        queryKey: ['admin-bookings', statusFilter],
+        queryKey: ['admin-bookings', statusFilter, searchTerm],
         queryFn: async () => {
-            const res = await api.get(`/admin/bookings${statusFilter ? `?status=${statusFilter}` : ''}`);
+            const params: any = {};
+            if (statusFilter) params.status = statusFilter;
+            if (searchTerm) params.search = searchTerm;
+            const res = await api.get('/admin/bookings', { params });
             return res.data;
         }
     });
 
-    const cancelMutation = useMutation({
-        mutationFn: (id: string) => api.patch(`/admin/bookings/${id}/cancel`),
+    const updateStatusMutation = useMutation({
+        mutationFn: ({ id, status }: { id: string; status: string }) =>
+            api.patch(`/admin/bookings/${id}`, { status }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin-bookings'] });
-            toast.success('Booking cancelled successfully');
+            toast.success('Booking status updated successfully');
         }
     });
 
@@ -55,8 +60,8 @@ const BookingManagement: React.FC = () => {
                             key={status}
                             onClick={() => setStatusFilter(status)}
                             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${statusFilter === status
-                                    ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                                    : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                                ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                                : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
                                 }`}
                         >
                             {status === '' ? 'All Bookings' : status.charAt(0).toUpperCase() + status.slice(1)}
@@ -69,6 +74,8 @@ const BookingManagement: React.FC = () => {
                         type="text"
                         placeholder="Search booking ID..."
                         className="w-full pl-10 pr-4 py-2 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-primary/20 outline-none"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
             </div>
@@ -115,8 +122,8 @@ const BookingManagement: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase flex items-center gap-1 w-fit ${booking.status === 'confirmed' ? 'bg-green-100 text-green-600' :
-                                                booking.status === 'cancelled' ? 'bg-red-100 text-red-600' :
-                                                    'bg-yellow-100 text-yellow-600'
+                                            booking.status === 'cancelled' ? 'bg-red-100 text-red-600' :
+                                                'bg-yellow-100 text-yellow-600'
                                             }`}>
                                             {booking.status === 'confirmed' ? <CheckCircle size={10} /> : <RefreshCcw size={10} />}
                                             {booking.status}
@@ -130,11 +137,24 @@ const BookingManagement: React.FC = () => {
                                                     title="Cancel Booking"
                                                     onClick={() => {
                                                         if (window.confirm('Are you sure you want to cancel this booking?')) {
-                                                            cancelMutation.mutate(booking._id);
+                                                            updateStatusMutation.mutate({ id: booking._id, status: 'cancelled' });
                                                         }
                                                     }}
                                                 >
                                                     <XCircle size={18} />
+                                                </button>
+                                            )}
+                                            {booking.status === 'pending' && (
+                                                <button
+                                                    className="p-2 hover:bg-green-50 text-green-500 rounded-lg transition-colors"
+                                                    title="Confirm Booking"
+                                                    onClick={() => {
+                                                        if (window.confirm('Are you sure you want to confirm this booking?')) {
+                                                            updateStatusMutation.mutate({ id: booking._id, status: 'confirmed' });
+                                                        }
+                                                    }}
+                                                >
+                                                    <CheckCircle size={18} />
                                                 </button>
                                             )}
                                             <button className="p-2 hover:bg-primary/10 text-primary rounded-lg transition-colors" title="View Details">
