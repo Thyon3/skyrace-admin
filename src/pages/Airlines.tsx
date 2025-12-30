@@ -39,6 +39,10 @@ const Airlines: React.FC = () => {
         a.code.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedAirline, setSelectedAirline] = useState<any>(null);
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -46,7 +50,10 @@ const Airlines: React.FC = () => {
                     <h1 className="text-2xl font-bold text-secondary">Airlines Management</h1>
                     <p className="text-gray-500">Manage partner airlines and their operational status.</p>
                 </div>
-                <button className="btn-primary flex items-center gap-2">
+                <button
+                    onClick={() => setIsCreateModalOpen(true)}
+                    className="btn-primary flex items-center gap-2"
+                >
                     <Plus size={18} />
                     Add Airline
                 </button>
@@ -90,12 +97,18 @@ const Airlines: React.FC = () => {
                             <h3 className="text-lg font-bold text-secondary">{airline.name}</h3>
                             <div className="flex items-center gap-2 text-sm text-gray-500">
                                 <Globe size={14} />
-                                {airline.country} • <span className="font-mono font-bold text-primary">{airline.code}</span>
+                                {airline.country} • <span className="font-mono font-bold text-primary">{airline.iataCode}</span>
                             </div>
                         </div>
 
                         <div className="flex gap-2 pt-4 border-t">
-                            <button className="flex-1 flex items-center justify-center gap-2 py-2 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-xl transition-colors text-sm font-bold">
+                            <button
+                                onClick={() => {
+                                    setSelectedAirline(airline);
+                                    setIsEditModalOpen(true);
+                                }}
+                                className="flex-1 flex items-center justify-center gap-2 py-2 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-xl transition-colors text-sm font-bold"
+                            >
                                 <Edit2 size={16} />
                                 Edit
                             </button>
@@ -113,6 +126,22 @@ const Airlines: React.FC = () => {
                     </div>
                 ))}
             </div>
+
+            <CreateAirlineModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+            />
+
+            {selectedAirline && (
+                <EditAirlineModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => {
+                        setIsEditModalOpen(false);
+                        setSelectedAirline(null);
+                    }}
+                    airline={selectedAirline}
+                />
+            )}
         </div>
     );
 };
