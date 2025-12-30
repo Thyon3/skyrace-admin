@@ -11,11 +11,7 @@ import Flights from './pages/Flights';
 import Bookings from './pages/Bookings';
 import AuditLogs from './pages/AuditLogs';
 import Settings from './pages/Settings';
-import Payments from './pages/Payments';
-import Analytics from './pages/Analytics';
-import Airlines from './pages/Airlines';
-import Airports from './pages/Airports';
-import Notifications from './pages/Notifications';
+import Profile from './pages/Profile';
 
 const queryClient = new QueryClient();
 
@@ -52,6 +48,7 @@ const App: React.FC = () => {
                             <Route path="audit" element={<AuditLogs />} />
                             <Route path="payments" element={<Payments />} />
                             <Route path="settings" element={<Settings />} />
+                            <Route path="profile" element={<Profile />} />
                         </Route>
                     </Routes>
                 </BrowserRouter>
