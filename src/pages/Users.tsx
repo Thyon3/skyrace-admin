@@ -9,7 +9,8 @@ import {
     Trash2,
     Mail,
     Calendar,
-    Shield
+    Shield,
+    Edit2
 } from 'lucide-react';
 import api from '../api/client';
 import toast from 'react-hot-toast';
@@ -22,9 +23,9 @@ const UserManagement: React.FC = () => {
     const queryClient = useQueryClient();
 
     const { data, isLoading } = useQuery({
-        queryKey: ['admin-users'],
+        queryKey: ['admin-users', searchTerm],
         queryFn: async () => {
-            const res = await api.get('/admin/users');
+            const res = await api.get('/admin/users', { params: { search: searchTerm } });
             return res.data;
         }
     });
