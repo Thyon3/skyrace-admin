@@ -11,6 +11,8 @@ import Flights from './pages/Flights';
 import Bookings from './pages/Bookings';
 import AuditLogs from './pages/AuditLogs';
 import Settings from './pages/Settings';
+import Payments from './pages/Payments';
+import Analytics from './pages/Analytics';
 
 const queryClient = new QueryClient();
 
@@ -37,6 +39,7 @@ const App: React.FC = () => {
                             </ProtectedRoute>
                         }>
                             <Route index element={<Dashboard />} />
+                            <Route path="analytics" element={<Analytics />} />
                             <Route path="users" element={<Users />} />
                             <Route path="flights" element={<Flights />} />
                             <Route path="bookings" element={<Bookings />} />
