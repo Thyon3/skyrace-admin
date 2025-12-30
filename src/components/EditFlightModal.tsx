@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Plane, Calendar, Clock, MapPin, DollarSign } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../api/client';
 import toast from 'react-hot-toast';
 
-interface CreateFlightModalProps {
+interface EditFlightModalProps {
     isOpen: boolean;
     onClose: () => void;
+    flight: any;
 }
 
-const CreateFlightModal: React.FC<CreateFlightModalProps> = ({ isOpen, onClose }) => {
+const EditFlightModal: React.FC<EditFlightModalProps> = ({ isOpen, onClose, flight }) => {
     const queryClient = useQueryClient();
     const [formData, setFormData] = useState({
         airline: '',
@@ -20,19 +21,38 @@ const CreateFlightModal: React.FC<CreateFlightModalProps> = ({ isOpen, onClose }
         arrivalTime: '',
         price: '',
         duration: '',
-        gate: 'TBD',
-        terminal: '1'
+        availableSeats: '',
+        gate: '',
+        terminal: ''
     });
 
+    useEffect(() => {
+        if (flight) {
+            setFormData({
+                airline: flight.airline,
+                flightNumber: flight.flightNumber,
+                origin: flight.origin,
+                destination: flight.destination,
+                departureTime: flight.departureTime ? new Date(flight.departureTime).toISOString().slice(0, 16) : '',
+                arrivalTime: flight.arrivalTime ? new Date(flight.arrivalTime).toISOString().slice(0, 16) : '',
+                price: flight.price,
+                duration: flight.duration,
+                availableSeats: flight.availableSeats,
+                gate: flight.gate || '',
+                terminal: flight.terminal || ''
+            });
+        }
+    }, [flight]);
+
     const mutation = useMutation({
-        mutationFn: (newFlight: any) => api.post('/admin/flights', newFlight),
+        mutationFn: (updatedFlight: any) => api.patch(`/admin/flights/${flight._id}`, updatedFlight),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin-flights'] });
-            toast.success('Flight created successfully!');
+            toast.success('Flight updated successfully!');
             onClose();
         },
         onError: (err: any) => {
-            toast.error(err.response?.data?.message || 'Failed to create flight');
+            toast.error(err.response?.data?.message || 'Failed to update flight');
         }
     });
 
@@ -42,8 +62,9 @@ const CreateFlightModal: React.FC<CreateFlightModalProps> = ({ isOpen, onClose }
         e.preventDefault();
         mutation.mutate({
             ...formData,
-            price: parseFloat(formData.price),
-            duration: parseInt(formData.duration),
+            price: parseFloat(formData.price as string),
+            duration: parseInt(formData.duration as string),
+            availableSeats: parseInt(formData.availableSeats as string),
             departureTime: new Date(formData.departureTime).toISOString(),
             arrivalTime: new Date(formData.arrivalTime).toISOString(),
         });
@@ -57,7 +78,7 @@ const CreateFlightModal: React.FC<CreateFlightModalProps> = ({ isOpen, onClose }
                         <div className="p-2 bg-primary/10 rounded-lg text-primary">
                             <Plane size={24} />
                         </div>
-                        <h2 className="text-xl font-bold text-secondary">Add New Flight</h2>
+                        <h2 className="text-xl font-bold text-secondary">Edit Flight</h2>
                     </div>
                     <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
                         <X size={20} className="text-gray-500" />
@@ -197,7 +218,7 @@ const CreateFlightModal: React.FC<CreateFlightModalProps> = ({ isOpen, onClose }
                             disabled={mutation.isPending}
                             className="flex-2 btn-primary h-12 flex items-center justify-center gap-2"
                         >
-                            {mutation.isPending ? 'Creating...' : 'Create Flight'}
+                            {mutation.isPending ? 'Updating...' : 'Update Flight'}
                         </button>
                     </div>
                 </form>
@@ -206,4 +227,4 @@ const CreateFlightModal: React.FC<CreateFlightModalProps> = ({ isOpen, onClose }
     );
 };
 
-export default CreateFlightModal;
+export default EditFlightModal;
