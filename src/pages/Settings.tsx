@@ -10,7 +10,8 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const SystemSettings: React.FC = () => {
+const SettingsPage: React.FC = () => {
+    const queryClient = useQueryClient();
     const [settings, setSettings] = useState({
         siteName: 'SkyRace Admin',
         maintenanceMode: false,
@@ -20,7 +21,40 @@ const SystemSettings: React.FC = () => {
         sessionTimeout: '30'
     });
 
-    const handleSave = () => {
+    const { data } = useQuery({
+        queryKey: ['system-settings'],
+        queryFn: async () => {
+            const res = await api.get('/admin/system-settings');
+            return res.data.settings;
+        }
+    });
+
+    React.useEffect(() => {
+        if (data) {
+            const newSettings: any = { ...settings };
+            data.forEach((s: any) => {
+                if (s.key === 'maintenanceMode' || s.key === 'allowRegistration' || s.key === 'emailNotifications') {
+                    newSettings[s.key] = s.value === 'true';
+                } else {
+                    newSettings[s.key] = s.value;
+                }
+            });
+            setSettings(newSettings);
+        }
+    }, [data]);
+
+    const updateMutation = useMutation({
+        mutationFn: (payload: { key: string; value: string }) => api.patch('/admin/system-settings', payload),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['system-settings'] });
+        }
+    });
+
+    const handleSave = async () => {
+        const promises = Object.entries(settings).map(([key, value]) =>
+            updateMutation.mutateAsync({ key, value: String(value) })
+        );
+        await Promise.all(promises);
         toast.success('Settings saved successfully!');
     };
 
