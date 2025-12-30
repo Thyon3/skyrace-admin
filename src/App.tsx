@@ -10,6 +10,7 @@ import Users from './pages/Users';
 import Flights from './pages/Flights';
 import Bookings from './pages/Bookings';
 import AuditLogs from './pages/AuditLogs';
+import Settings from './pages/Settings';
 
 const queryClient = new QueryClient();
 
@@ -39,8 +40,9 @@ const App: React.FC = () => {
                             <Route path="users" element={<Users />} />
                             <Route path="flights" element={<Flights />} />
                             <Route path="bookings" element={<Bookings />} />
+                            <Route path="audit" element={<AuditLogs />} />
                             <Route path="payments" element={<div>Payments Page (Coming Soon)</div>} />
-                            <Route path="settings" element={<div>Settings Page (Coming Soon)</div>} />
+                            <Route path="settings" element={<Settings />} />
                         </Route>
                     </Routes>
                 </BrowserRouter>
