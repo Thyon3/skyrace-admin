@@ -12,6 +12,9 @@ import {
 } from 'lucide-react';
 import api from '../api/client';
 import toast from 'react-hot-toast';
+import CreateAirlineModal from '../components/CreateAirlineModal';
+import EditAirlineModal from '../components/EditAirlineModal';
+
 
 const Airlines: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');

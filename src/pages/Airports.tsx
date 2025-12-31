@@ -6,11 +6,14 @@ import {
     MapPin,
     Edit2,
     Trash2,
-    Navigation,
-    Globe
+    Navigation
 } from 'lucide-react';
+
 import api from '../api/client';
 import toast from 'react-hot-toast';
+import CreateAirportModal from '../components/CreateAirportModal';
+import EditAirportModal from '../components/EditAirportModal';
+
 
 const Airports: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
