@@ -43,6 +43,15 @@ const Analytics: React.FC = () => {
         }
     });
 
+    const { data: airlineData, isLoading: airlineLoading } = useQuery({
+        queryKey: ['admin-airline-stats'],
+        queryFn: async () => {
+            const res = await api.get('/admin/revenue/airlines');
+            return res.data.stats;
+        }
+    });
+
+
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
     return (
@@ -182,53 +191,41 @@ const Analytics: React.FC = () => {
                 </div>
 
                 <div className="card">
-                    <h3 className="text-lg font-bold text-secondary mb-6">Revenue by Category</h3>
+                    <h3 className="text-lg font-bold text-secondary mb-6">Revenue by Airline</h3>
                     <div className="h-80 flex items-center justify-center">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                                 <Pie
-                                    data={[
-                                        { name: 'Economy', value: 65 },
-                                        { name: 'Business', value: 25 },
-                                        { name: 'First Class', value: 10 },
-                                    ]}
+                                    data={airlineData?.map((a: any) => ({ name: a._id, value: a.revenue })) || []}
                                     innerRadius={60}
                                     outerRadius={80}
                                     paddingAngle={5}
                                     dataKey="value"
                                 >
-                                    {COLORS.map((color, index) => (
-                                        <Cell key={`cell-${index}`} fill={color} />
+                                    {airlineData?.map((_: any, index: number) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
-                                <Tooltip />
+                                <Tooltip
+                                    formatter={(value: number) => `$${value.toLocaleString()}`}
+                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                                />
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
-                    <div className="space-y-2 mt-4">
-                        <div className="flex justify-between items-center text-sm">
-                            <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full bg-[#0088FE]" />
-                                <span className="text-gray-500">Economy</span>
+                    <div className="space-y-2 mt-4 max-h-32 overflow-y-auto pr-2">
+                        {airlineData?.map((item: any, index: number) => (
+                            <div key={item._id} className="flex justify-between items-center text-sm">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                                    <span className="text-gray-500 truncate max-w-[100px]">{item._id}</span>
+                                </div>
+                                <span className="font-bold text-secondary">${item.revenue.toLocaleString()}</span>
                             </div>
-                            <span className="font-bold text-secondary">65%</span>
-                        </div>
-                        <div className="flex justify-between items-center text-sm">
-                            <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full bg-[#00C49F]" />
-                                <span className="text-gray-500">Business</span>
-                            </div>
-                            <span className="font-bold text-secondary">25%</span>
-                        </div>
-                        <div className="flex justify-between items-center text-sm">
-                            <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full bg-[#FFBB28]" />
-                                <span className="text-gray-500">First Class</span>
-                            </div>
-                            <span className="font-bold text-secondary">10%</span>
-                        </div>
+                        ))}
                     </div>
                 </div>
+
             </div>
         </div>
     );

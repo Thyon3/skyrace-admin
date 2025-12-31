@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 const api = axios.create({
     baseURL: 'http://localhost:5000/api',
 });
 
-api.interceptors.request.use((config) => {
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem('admin_token');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -13,8 +13,8 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-    (response) => response,
-    (error) => {
+    (response: AxiosResponse) => response,
+    (error: AxiosError) => {
         if (error.response?.status === 401 || error.response?.status === 403) {
             localStorage.removeItem('admin_token');
             if (window.location.pathname !== '/login') {

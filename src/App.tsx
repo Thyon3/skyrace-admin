@@ -5,13 +5,20 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';
+import Analytics from './pages/Analytics';
 import Login from './pages/Login';
 import Users from './pages/Users';
 import Flights from './pages/Flights';
+import Airlines from './pages/Airlines';
+import Airports from './pages/Airports';
+import Notifications from './pages/Notifications';
 import Bookings from './pages/Bookings';
 import AuditLogs from './pages/AuditLogs';
+import Payments from './pages/Payments';
 import Settings from './pages/Settings';
 import Profile from './pages/Profile';
+import Support from './pages/Support';
+
 
 const queryClient = new QueryClient();
 
@@ -47,7 +54,9 @@ const App: React.FC = () => {
                             <Route path="bookings" element={<Bookings />} />
                             <Route path="audit" element={<AuditLogs />} />
                             <Route path="payments" element={<Payments />} />
+                            <Route path="support" element={<Support />} />
                             <Route path="settings" element={<Settings />} />
+
                             <Route path="profile" element={<Profile />} />
                         </Route>
                     </Routes>
