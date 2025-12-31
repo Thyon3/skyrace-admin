@@ -7,8 +7,11 @@ import {
     TrendingUp,
     ArrowUpRight,
     ArrowDownRight,
-    Plane
+    Plane,
+    MessageSquare
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
 import {
     AreaChart,
     Area,
@@ -22,17 +25,9 @@ import {
 } from 'recharts';
 import api from '../api/client';
 
-const data = [
-    { name: 'Jan', revenue: 4000, bookings: 240 },
-    { name: 'Feb', revenue: 3000, bookings: 139 },
-    { name: 'Mar', revenue: 2000, bookings: 980 },
-    { name: 'Apr', revenue: 2780, bookings: 390 },
-    { name: 'May', revenue: 1890, bookings: 480 },
-    { name: 'Jun', revenue: 2390, bookings: 380 },
-    { name: 'Jul', revenue: 3490, bookings: 430 },
-];
 
 const StatCard = ({ title, value, icon: Icon, trend, trendValue }: any) => (
+
     <div className="card">
         <div className="flex justify-between items-start mb-4">
             <div className="p-3 bg-primary/10 rounded-xl text-primary">
@@ -56,6 +51,16 @@ const Dashboard: React.FC = () => {
             return res.data;
         }
     });
+
+    const { data: recentTickets } = useQuery({
+        queryKey: ['admin-recent-tickets'],
+        queryFn: async () => {
+            const res = await api.get('/admin/support/recent');
+            if (res.data.success) return res.data.data;
+            return res.data.tickets; // Fallback for different API structures
+        }
+    });
+
 
     if (isLoading) return <div className="flex items-center justify-center h-96">Loading...</div>;
 
@@ -148,56 +153,100 @@ const Dashboard: React.FC = () => {
                 </div>
             </div>
 
-            {/* Recent Bookings Table */}
-            <div className="card">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-bold text-secondary">Recent Bookings</h3>
-                    <Link to="/bookings" className="text-primary font-medium hover:underline">View All</Link>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="text-left text-gray-400 text-sm border-b">
-                                <th className="pb-4 font-medium">User</th>
-                                <th className="pb-4 font-medium">Flight</th>
-                                <th className="pb-4 font-medium">Date</th>
-                                <th className="pb-4 font-medium">Amount</th>
-                                <th className="pb-4 font-medium">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y">
-                            {metrics?.recentBookings?.map((booking: any) => (
-                                <tr key={booking._id} className="text-sm">
-                                    <td className="py-4">
-                                        <div className="font-medium text-secondary">{booking.user?.name}</div>
-                                        <div className="text-xs text-gray-400">{booking.user?.email}</div>
-                                    </td>
-                                    <td className="py-4">
-                                        <div className="font-medium text-secondary">{booking.flight?.airline}</div>
-                                        <div className="text-xs text-gray-400">{booking.flight?.flightNumber}</div>
-                                    </td>
-                                    <td className="py-4 text-gray-500">
-                                        {new Date(booking.createdAt).toLocaleDateString()}
-                                    </td>
-                                    <td className="py-4 font-bold text-secondary">
-                                        ${booking.totalPrice}
-                                    </td>
-                                    <td className="py-4">
-                                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${booking.status === 'confirmed' ? 'bg-green-100 text-green-600' :
-                                            booking.status === 'cancelled' ? 'bg-red-100 text-red-600' :
-                                                'bg-yellow-100 text-yellow-600'
-                                            }`}>
-                                            {booking.status}
-                                        </span>
-                                    </td>
+            {/* Recent Activity Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Recent Bookings Table */}
+                <div className="card lg:col-span-2">
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-lg font-bold text-secondary">Recent Bookings</h3>
+                        <Link to="/bookings" className="text-primary font-medium hover:underline">View All</Link>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full">
+                            <thead>
+                                <tr className="text-left text-gray-400 text-sm border-b">
+                                    <th className="pb-4 font-medium">User</th>
+                                    <th className="pb-4 font-medium">Flight</th>
+                                    <th className="pb-4 font-medium">Date</th>
+                                    <th className="pb-4 font-medium">Amount</th>
+                                    <th className="pb-4 font-medium">Status</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y">
+                                {metrics?.recentBookings?.map((booking: any) => (
+                                    <tr key={booking._id} className="text-sm">
+                                        <td className="py-4">
+                                            <div className="font-medium text-secondary">{booking.user?.name}</div>
+                                            <div className="text-xs text-gray-400">{booking.user?.email}</div>
+                                        </td>
+                                        <td className="py-4">
+                                            <div className="font-medium text-secondary">{booking.flight?.airline}</div>
+                                            <div className="text-xs text-gray-400">{booking.flight?.flightNumber}</div>
+                                        </td>
+                                        <td className="py-4 text-gray-500">
+                                            {new Date(booking.createdAt).toLocaleDateString()}
+                                        </td>
+                                        <td className="py-4 font-bold text-secondary">
+                                            ${booking.totalPrice}
+                                        </td>
+                                        <td className="py-4">
+                                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${booking.status === 'confirmed' ? 'bg-green-100 text-green-600' :
+                                                booking.status === 'cancelled' ? 'bg-red-100 text-red-600' :
+                                                    'bg-yellow-100 text-yellow-600'
+                                                }`}>
+                                                {booking.status}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {/* Recent Tickets Activity */}
+                <div className="card">
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-lg font-bold text-secondary">Support Activity</h3>
+                        <Link to="/support" className="text-primary font-medium hover:underline">View All</Link>
+                    </div>
+                    <div className="space-y-6">
+                        {recentTickets?.map((ticket: any) => (
+                            <div key={ticket._id} className="flex gap-4">
+                                <div className={`mt-1 p-2 rounded-lg shrink-0 ${ticket.status === 'OPEN' ? 'bg-blue-50 text-blue-600' :
+                                    ticket.status === 'IN_PROGRESS' ? 'bg-orange-50 text-orange-600' :
+                                        'bg-green-50 text-green-600'
+                                    }`}>
+                                    <MessageSquare size={16} />
+                                </div>
+                                <div className="space-y-1 min-w-0">
+                                    <p className="text-sm font-bold text-secondary truncate">{ticket.subject}</p>
+                                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                                        <span className="font-medium">{ticket.userId?.name || 'User'}</span>
+                                        <span>•</span>
+                                        <span>{new Date(ticket.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                    </div>
+                                    <div className={`text-[10px] font-bold px-2 py-0.5 rounded w-fit ${ticket.priority === 'URGENT' ? 'bg-red-100 text-red-600' :
+                                        ticket.priority === 'HIGH' ? 'bg-orange-100 text-orange-600' :
+                                            'bg-blue-100 text-blue-600'
+                                        }`}>
+                                        {ticket.priority}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        {(!recentTickets || recentTickets.length === 0) && (
+                            <div className="text-center py-8">
+                                <MessageSquare className="mx-auto text-gray-200 mb-2" size={32} />
+                                <p className="text-sm text-gray-400">No recent support activity</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
     );
 };
+
 
 export default Dashboard;
