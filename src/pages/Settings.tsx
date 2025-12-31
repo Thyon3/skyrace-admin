@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import api from '../api/client';
 import {
     Settings,
     Shield,
     Bell,
-    Globe,
-    Lock,
     Save,
     Database
+
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const SettingsPage: React.FC = () => {
+
+const SystemSettings: React.FC = () => {
+
     const queryClient = useQueryClient();
     const [settings, setSettings] = useState({
         siteName: 'SkyRace Admin',
