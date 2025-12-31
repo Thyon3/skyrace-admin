@@ -10,15 +10,15 @@ import {
     LogOut,
     Bell,
     Search,
-    Menu,
     ClipboardList,
     TrendingUp,
     Globe,
     Navigation,
-    Send,
     MessageSquare,
-    Plus
+    Plus,
+    Tag
 } from 'lucide-react';
+
 
 
 import { useAuth } from '../context/AuthContext';
@@ -113,6 +113,12 @@ const MainLayout: React.FC = () => {
                         label="Support"
                         path="/support"
                         active={location.pathname === '/support'}
+                    />
+                    <SidebarItem
+                        icon={Tag}
+                        label="Promos"
+                        path="/promos"
+                        active={location.pathname === '/promos'}
                     />
                     <SidebarItem
                         icon={ClipboardList}

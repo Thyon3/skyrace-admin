@@ -18,6 +18,8 @@ import Payments from './pages/Payments';
 import Settings from './pages/Settings';
 import Profile from './pages/Profile';
 import Support from './pages/Support';
+import Promos from './pages/Promos';
+
 
 
 const queryClient = new QueryClient();
@@ -55,7 +57,9 @@ const App: React.FC = () => {
                             <Route path="audit" element={<AuditLogs />} />
                             <Route path="payments" element={<Payments />} />
                             <Route path="support" element={<Support />} />
+                            <Route path="promos" element={<Promos />} />
                             <Route path="settings" element={<Settings />} />
+
 
                             <Route path="profile" element={<Profile />} />
                         </Route>
